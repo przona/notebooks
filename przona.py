@@ -124,7 +124,7 @@ def read_dict(file_name, spy=False):
                 dict_out[index] = [row]
             else:
                 dict_out[index] = row
-        if counter % 100 == 0:
+        if counter % 1000 == 0:
             if spy: 
                 squeal(counter)
     if spy:
@@ -143,7 +143,7 @@ def get_duplicate_web_pages(web_pages, out_file_name):
             save_dict({url: content}, out_file_name, mode="a")
             
 
-def update_recommendations(recommendation_list, processed_urls, out_file_name):
+def update_recommendations(recommendation_list, processed_urls, out_file_name, BASE_URL=""):
     counter = 0
     for recommendation in recommendation_list:
         counter += 1
@@ -153,7 +153,7 @@ def update_recommendations(recommendation_list, processed_urls, out_file_name):
                                                      patterns=["^/richtlijn/", "^/gerelateerde_documenten"],
                                                      processed_urls = processed_urls,
                                                      debug=False)
-            save_dict(recommendation_web_pages, CSV_DIR+RECOMMENDATIONS_FILE, mode="a")
+            save_dict(recommendation_web_pages, out_file_name, mode="a")
             processed_urls += list(recommendation_web_pages.keys())
 
 
@@ -195,11 +195,11 @@ def get_categories_per_recommendation(recommendations_per_category):
     return(categories_per_recommendation)
 
 
-def pretty_print(recommendations_per_category):
+def pretty_print(recommendations_per_category, outfile_name):
     categories_per_recommendation = get_categories_per_recommendation(recommendations_per_category)
     r_per_c = {c:{r:categories_per_recommendation[r][c] for r in categories_per_recommendation} for c in categories_per_recommendation[list(categories_per_recommendation.keys())[0]]}
     r_per_c = {c:r_per_c[c] for c in sorted(r_per_c.keys(), key=lambda c:len([r for r in r_per_c[c] if r_per_c[c][r] == "+"]), reverse=True)}
-    pd.DataFrame(r_per_c).to_csv(CSV_DIR+"richtlijnen-categorie.csv", index_label="richtlijn")
+    pd.DataFrame(r_per_c).to_csv(outfile_name, index_label="richtlijn")
     return(pd.DataFrame(r_per_c))
 
 
@@ -214,7 +214,7 @@ def get_recommendations(web_pages):
     return(recommendations)
 
 
-def count_suffixes():
+def count_suffixes(web_pages):
     suffixes = {}
     for key in web_pages.keys():
         suffix = key.split("/")[-1]
