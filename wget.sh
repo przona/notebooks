@@ -3,8 +3,8 @@
 # usage: wget.sh url
 # 20210118 erikt(at)xs4all.nl
 
-URL="$1"
-LOGFILE=logfile
+URL=richtlijnendatabase.nl
+LOGFILE=logfile.`date '+%Y%m%d'`
 BASEDIR="/home/erikt/projects/przona/data/"
 
 if [ -z "$URL" ]
@@ -14,5 +14,6 @@ then
 fi
 
 cd $BASEDIR
-wget -nc -r -e robots=off -o - "$URL" 2>&1 >> $LOGFILE
+# wget -nc -r -e robots=off -o - "$URL" 2>&1 >> $LOGFILE
+wget -nc -r -o - -R "*.pdf" -X /contact,/info,/pdf,/assets,/gerelateerde_documenten,/en/contact,/en/info,/en/pdf,/en/assets,/en/gerelateerde_documenten "$URL" 2>&1 | tee $LOGFILE
 exit 0
