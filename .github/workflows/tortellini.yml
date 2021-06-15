@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: tortellini-tools/action@main
+    - uses: tortellini-tools/action@v3
     - name: Archive results
       uses: actions/upload-artifact@v2
       with:
